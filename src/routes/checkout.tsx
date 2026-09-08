@@ -72,8 +72,10 @@ function Checkout() {
       }
       clearCart();
       setDone(result.orderNumber);
-    } catch {
-      toast.error("تعذّر إتمام الطلب، حاول مرة أخرى");
+    } catch (err: unknown) {
+      console.error("Order error:", err);
+      const msg = err instanceof Error ? err.message : "تعذّر إتمام الطلب، حاول مرة أخرى";
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
