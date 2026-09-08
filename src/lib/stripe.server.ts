@@ -10,18 +10,33 @@ export type StripeEnv = 'sandbox' | 'live';
 
 const GATEWAY_STRIPE_BASE = 'https://connector-gateway.lovable.dev/stripe';
 
-export function getConnectionApiKey(env: StripeEnv): string {
-  return env === 'sandbox'
-    ? getEnv('STRIPE_SANDBOX_API_KEY')
-    : getEnv('STRIPE_LIVE_API_KEY');
+export function getConnectionApiKey(env: StripeEnv): string | undefined {
+  return process.env['STRIPE_SECRET_KEY'] ||
+    (env === 'sandbox' ? process.env['STRIPE_SANDBOX_API_KEY'] : process.env['STRIPE_LIVE_API_KEY']) ||
+    process.env['STRIPE_SANDBOX_API_KEY'] ||
+    process.env['STRIPE_LIVE_API_KEY'];
 }
 
 export function createStripeClient(env: StripeEnv): Stripe {
-  const connectionApiKey = getConnectionApiKey(env);
-  const lovableApiKey = getEnv('LOVABLE_API_KEY');
+  const secretKey = getConnectionApiKey(env);
+
+  // If a direct Stripe secret key (sk_test_... or sk_live_...) is provided, use Stripe API directly
+  if (secretKey && secretKey.startsWith('sk_')) {
+    return new Stripe(secretKey, {
+      apiVersion: '2026-03-25.dahlia' as any,
+    });
+  }
+
+  // Fallback to Lovable proxy gateway if configured
+  const connectionApiKey = secretKey || getEnv('STRIPE_SANDBOX_API_KEY');
+  const lovableApiKey = process.env['LOVABLE_API_KEY'];
+
+  if (!lovableApiKey) {
+    throw new Error('يرجى توفير مفتاح Stripe الخفي (STRIPE_SECRET_KEY ينتهي بـ sk_test_... أو sk_live_...).');
+  }
 
   return new Stripe(connectionApiKey, {
-    apiVersion: '2026-03-25.dahlia',
+    apiVersion: '2026-03-25.dahlia' as any,
     httpClient: Stripe.createFetchHttpClient((input, init) => {
       const stripeUrl = input instanceof Request ? input.url : input.toString();
       const gatewayUrl = stripeUrl.replace('https://api.stripe.com', GATEWAY_STRIPE_BASE);

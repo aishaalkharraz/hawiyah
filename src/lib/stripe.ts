@@ -2,14 +2,20 @@ import { loadStripe, Stripe } from "@stripe/stripe-js";
 
 type StripeEnv = 'sandbox' | 'live';
 
-const clientToken = import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] as string | undefined;
+const getPublishableKey = (): string | undefined => {
+  return (
+    (import.meta.env['VITE_PAYMENTS_CLIENT_TOKEN'] as string) ||
+    (import.meta.env['VITE_STRIPE_PUBLISHABLE_KEY'] as string) ||
+    (typeof process !== 'undefined' ? process.env['VITE_STRIPE_PUBLISHABLE_KEY'] : undefined)
+  );
+};
 
 function paymentsEnvironment(): StripeEnv {
-  if (clientToken?.startsWith('pk_test_')) return 'sandbox';
-  if (clientToken?.startsWith('pk_live_')) return 'live';
+  const token = getPublishableKey();
+  if (token?.startsWith('pk_test_')) return 'sandbox';
+  if (token?.startsWith('pk_live_')) return 'live';
   throw new Error(
-    "Stripe payments are not configured for this build. " +
-    "Complete Stripe go-live in your Lovable project to enable production checkout."
+    "لم يتم إعداد مفاتيح Stripe بعد. يرجى توفير Publishable Key (pk_test_... أو pk_live_...)."
   );
 }
 
@@ -18,7 +24,8 @@ let stripePromise: Promise<Stripe | null> | null = null;
 export function getStripe(): Promise<Stripe | null> {
   if (!stripePromise) {
     paymentsEnvironment();
-    stripePromise = loadStripe(clientToken as string);
+    const token = getPublishableKey()!;
+    stripePromise = loadStripe(token);
   }
   return stripePromise;
 }
