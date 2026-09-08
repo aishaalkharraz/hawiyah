@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import heroImg from "@/assets/hero.jpg";
+import brandHeroLogo from "@/assets/hawiya-hero-logo.png";
 import posterImg from "@/assets/p-poster.jpg";
 import mugImg from "@/assets/p-mug.jpg";
 import toteImg from "@/assets/p-tote.jpg";
@@ -85,13 +85,13 @@ function Home() {
             <span className="pointer-events-none absolute -bottom-6 left-2 font-display text-[7rem] leading-none text-primary/10 lg:text-[10rem]">
               هوية
             </span>
-            <div className="relative arch-soft overflow-hidden p-[6px] ring-1 ring-primary/20">
+            <div className="relative arch-soft overflow-hidden p-[6px] ring-1 ring-primary/20 bg-[#79856B]">
               <img
-                src={heroImg}
-                alt="مجموعة منتجات هوية: دفتر وحقيبة وكوب وبوستر وصندوق هدية"
+                src={brandHeroLogo}
+                alt="هوية — علامة تجارية عربية معاصرة"
                 width={1200}
-                height={1408}
-                className="arch-soft w-full object-cover shadow-lift"
+                height={900}
+                className="arch-soft w-full h-auto object-cover shadow-lift rounded-[20px]"
               />
             </div>
           </div>

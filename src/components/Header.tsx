@@ -31,8 +31,9 @@ export function Header() {
           >
             {menuOpen ? <Menu className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
-          <Link to="/" className="font-display text-2xl leading-none text-primary lg:text-[28px]">
-            هوية
+          <Link to="/" className="flex items-center gap-2.5 font-display text-2xl leading-none text-primary lg:text-[28px]">
+            <img src="/brand-logo.png" alt="هوية" className="h-8 w-8 rounded-lg object-cover shadow-xs border border-primary/20" />
+            <span>هوية</span>
           </Link>
         </div>
 

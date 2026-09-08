@@ -13,7 +13,10 @@ export function Footer() {
       </span>
       <div className="container-hawiya relative grid gap-12 py-16 lg:grid-cols-[1.2fr_1fr_1fr_1.4fr] lg:py-20">
         <div>
-          <p className="font-display text-3xl">هوية</p>
+          <div className="flex items-center gap-3">
+            <img src="/brand-logo.png" alt="هوية" className="h-9 w-9 rounded-lg object-cover border border-[#D7C0A3]/30" />
+            <p className="font-display text-3xl">هوية</p>
+          </div>
           <span className="mt-3 block h-px w-16 bg-[#D7C0A3]/50" aria-hidden />
           <p className="mt-3 max-w-xs text-sm text-[#F5EFE7]/70">يكتمل الجمال بهوية عربية</p>
         </div>
